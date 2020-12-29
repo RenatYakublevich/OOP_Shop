@@ -25,8 +25,11 @@ class Product:
 	def get_discount_price(self, cost, spent):
 		if spent < 1000:
 			return cost
-		if spent > 1000:
+		if spent < 3000:
 			return int(cost * 0.8)
+		return int(cost * 0.6)
+	def get_info(self):
+		return f'\n{self.title} от {self.developer}\nЦена - {self.cost}'
 
 
 class Telephone(Product):
@@ -47,18 +50,22 @@ class Manager:
 
 	def buy(self, id_product):
 		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.get_spent())
-		self.user.reduce_balance(price_with_discount)
-		print(f'Пользователь {user.name} купил {products[id_product].title} за {price_with_discount}')
+		if price_with_discount <= self.user.balance:
+			self.user.reduce_balance(price_with_discount)
+			print(f'Пользователь {user.name} купил {products[id_product].title} за {price_with_discount}')
+		else:
+			print('Недостаточно средств!\n')
 
 	def interface(self):
-		try:
-			print(f'Привет {user.name}!')
-			products = "\n".join([product.title for product in self.products])
-			id_product = int(input(f'Введи айди товара который хочешь купить\n{products}\n\nВведи номер и нажми Enter: ')) - 1
-			self.buy(id_product)
-			print(f'Оставшийся баланс - {user.get_balance()}')
-		except IndexError:
-			print('Такого товара нет!')
+		while True:
+			try:
+				print(f'Привет {user.name}!')
+				products = "\n".join([product.get_info() for product in self.products])
+				id_product = int(input(f'Введи айди товара который хочешь купить\n{products}\n\nВведи номер и нажми Enter: ')) - 1
+				self.buy(id_product)
+				print(f'Оставшийся баланс - {user.get_balance()}\n')
+			except IndexError:
+				print('Такого товара нет!\n')
 
 user = User('Ренат','Якублевич',10000, 1100)
 products = [Telephone(1000,'Iphone X', 1000, 'Apple'), Telephone(600,'S10', 900, 'Samsung'), Notebook(2, 'Macbook Pro 13', 2500, 'Apple')]
