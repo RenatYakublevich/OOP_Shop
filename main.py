@@ -9,13 +9,6 @@ class User:
 		self.balance -= cost
 		self.spent += cost
 
-	def get_balance(self):
-		return self.balance
-
-	def get_spent(self):
-		return self.spent
-
-
 class Product:
 	def __init__(self, title, cost, developer):
 		self.title = title
@@ -49,7 +42,7 @@ class Manager:
 		self.user = user
 
 	def buy(self, id_product):
-		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.get_spent())
+		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.spent)
 		try:
 			assert price_with_discount <= self.user.balance
 			self.user.reduce_balance(price_with_discount)
@@ -64,15 +57,13 @@ class Manager:
 				products = "\n".join([product.get_info() for product in self.products])
 				id_product = int(input(f'Введи айди товара который хочешь купить\n{products}\n\nВведи номер и нажми Enter: ')) - 1
 				self.buy(id_product)
-				print(f'Оставшийся баланс - {user.get_balance()}\n')
+				print(f'Оставшийся баланс - {user.balance}\n')
 			except IndexError:
 				print('Такого товара нет!\n')
+			except ValueError:
+				print('Введите индекс товара!')
 
 user = User('Ренат','Якублевич',10000, 1100)
 products = [Telephone(1000,'Iphone X', 1000, 'Apple'), Telephone(600,'S10', 900, 'Samsung'), Notebook(2, 'Macbook Pro 13', 2500, 'Apple')]
 manager = Manager(products, user)
 manager.interface()
-
-
-
-
