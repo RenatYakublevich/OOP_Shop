@@ -1,13 +1,13 @@
 class User:
-	def __init__(self, name, surname, balance, spent):
-		self.name = name
-		self.surname = surname
+	def __init__(self, name, surname, balance):
+		self.name = f'{name} {surname}'
 		self.balance = balance
-		self.spent = spent
+		self.spent = 0
 
 	def reduce_balance(self, cost):
 		self.balance -= cost
 		self.spent += cost
+
 
 class Product:
 	def __init__(self, title, cost, developer):
@@ -37,33 +37,39 @@ class Notebook(Product):
 
 
 class Manager:
-	def __init__(self, products, user):
+	def __init__(self, products):
 		self.products = products
-		self.user = user
+		self.register()
 
 	def buy(self, id_product):
 		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.spent)
 		try:
 			assert price_with_discount <= self.user.balance
 			self.user.reduce_balance(price_with_discount)
-			print(f'Пользователь {user.name} купил {products[id_product].title} за {price_with_discount}')
+			print(f'Пользователь {self.user.name} купил {products[id_product].title} за {price_with_discount}')
 		except AssertionError:
 			print('Недостаточно средств!')
 
 	def interface(self):
 		while True:
 			try:
-				print(f'Привет {user.name}!')
+				print(f'Привет {self.user.name}!')
 				products = "\n".join([product.get_info() for product in self.products])
 				id_product = int(input(f'Введи айди товара который хочешь купить\n{products}\n\nВведи номер и нажми Enter: ')) - 1
 				self.buy(id_product)
-				print(f'Оставшийся баланс - {user.balance}\n')
+				print(f'Оставшийся баланс - {self.user.balance}\n')
 			except IndexError:
 				print('Такого товара нет!\n')
 			except ValueError:
 				print('Введите индекс товара!')
 
-user = User('Ренат','Якублевич',10000, 1100)
+	def register(self):
+		name = input('Введите своё имя: ')
+		surname = input('Введите свою фамилию: ')
+		balance = int(input('Введите свой баланс: '))
+		self.user = User(name,surname,balance)
+
+
 products = [Telephone(1000,'Iphone X', 1000, 'Apple'), Telephone(600,'S10', 900, 'Samsung'), Notebook(2, 'Macbook Pro 13', 2500, 'Apple')]
-manager = Manager(products, user)
+manager = Manager(products)
 manager.interface()
