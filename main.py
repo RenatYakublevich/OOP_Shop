@@ -50,11 +50,12 @@ class Manager:
 
 	def buy(self, id_product):
 		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.get_spent())
-		if price_with_discount <= self.user.balance:
+		try:
+			assert price_with_discount <= self.user.balance
 			self.user.reduce_balance(price_with_discount)
 			print(f'Пользователь {user.name} купил {products[id_product].title} за {price_with_discount}')
-		else:
-			print('Недостаточно средств!\n')
+		except AssertionError:
+			print('Недостаточно средств!')
 
 	def interface(self):
 		while True:
