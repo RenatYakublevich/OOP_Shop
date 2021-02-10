@@ -22,9 +22,8 @@ class Product:
 		"""
 		return cost * (1 - (int(spent / 5000) * 0.05))
 
-
 	def get_info(self):
-		return f'\n{self.title} от {self.developer}\nЦена - {self.cost}$'
+		return f'{self.title} от {self.developer}\nЦена - {self.cost}$'
 
 
 class Telephone(Product):
@@ -39,11 +38,11 @@ class Notebook(Product):
 
 
 class Manager:
-	def __init__(self, products):
+	def __init__(self, products, user=None):
 		self.products = products
-		self.register()
+		self.user = user
 
-	def buy(self, id_product):
+	def buy(self, id_product : int):
 		price_with_discount = self.products[id_product].get_discount_price(self.products[id_product].cost, self.user.spent)
 		try:
 			assert price_with_discount <= self.user.balance
@@ -56,7 +55,7 @@ class Manager:
 		while True:
 			try:
 				print(f'Привет {self.user.name}!')
-				products = "\n".join([product.get_info() for product in self.products])
+				products = "\n".join([f'{number + 1} - {product.get_info()}\n' for number,product in enumerate(self.products)])
 				id_product = int(input(f'Введи айди товара который хочешь купить\n{products}\n\nВведи номер и нажми Enter: ')) - 1
 				self.buy(id_product)
 				print(f'Оставшийся баланс - {self.user.balance}$\n')
